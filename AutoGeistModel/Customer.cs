@@ -16,7 +16,7 @@ namespace AutoGeistModel
         }
 
         [Key]
-        public int CustID { get; set; }
+        public int CustId { get; set; }
 
         [StringLength(50)]
         public string FirstName { get; set; }

@@ -15,7 +15,7 @@ namespace AutoGeistModel
             Orders = new HashSet<Order>();
         }
 
-        public int CarID { get; set; }
+        public int CarId { get; set; }
 
         [StringLength(50)]
         public string Make { get; set; }

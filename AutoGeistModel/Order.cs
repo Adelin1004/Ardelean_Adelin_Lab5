@@ -9,11 +9,11 @@ namespace AutoGeistModel
     [Table("Order")]
     public partial class Order
     {
-        public int OrderID { get; set; }
+        public int OrderId { get; set; }
 
-        public int? CustID { get; set; }
+        public int? CustId { get; set; }
 
-        public int? CarID { get; set; }
+        public int? CarId { get; set; }
 
         public virtual Car Car { get; set; }
 
