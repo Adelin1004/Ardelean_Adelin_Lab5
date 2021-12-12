@@ -22,8 +22,11 @@ namespace Ardelean_Adelin_Lab5
         CollectionViewSource carOrdersViewSource;
 
         Binding bodyStyleTextBoxBinding = new Binding();
+
         Binding modelTextBoxBinding = new Binding();
+
         Binding makeTextBoxBinding = new Binding();
+
 
 
         public MainWindow()
@@ -42,6 +45,31 @@ namespace Ardelean_Adelin_Lab5
             makeTextBox.SetBinding(TextBox.TextProperty, makeTextBoxBinding);
 
             bodyStyleTextBox.SetBinding(TextBox.TextProperty, bodyStyleTextBoxBinding);
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            carViewSource = ((System.Windows.Data.CollectionViewSource)(this.FindResource("carViewSource")));
+            carViewSource.Source = ctx.Cars.Local;
+            ctx.Cars.Load();
+
+
+            customerViewSource = ((System.Windows.Data.CollectionViewSource)(this.FindResource("customerViewSource")));
+            customerViewSource.Source = ctx.Customers.Local;
+            ctx.Customers.Load();
+
+            carOrdersViewSource = ((System.Windows.Data.CollectionViewSource)(this.FindResource("carOrdersViewSource")));
+            //carOrdersViewSource.Source = ctx.Orders.Local;
+            ctx.Orders.Load();
+            BindDataGrid();
+
+            cbCars.ItemsSource = ctx.Cars.Local;
+            //cbCars.DisplayMemberPath = "Make";
+            cbCars.SelectedValuePath = "CarID";
+
+            cbCustomers.ItemsSource = ctx.Customers.Local;
+            //cbCustomers.DisplayMemberPath = "FirstName";
+            cbCustomers.SelectedValuePath = "CustId";
         }
         private void btnNew_Click(object sender, RoutedEventArgs e)
         {
@@ -203,6 +231,7 @@ namespace Ardelean_Adelin_Lab5
             }
             ReInitialize();
         }
+
         private void SaveInventory()
         {
             throw new NotImplementedException();
@@ -230,7 +259,7 @@ namespace Ardelean_Adelin_Lab5
                     //instantiem Order entity
                     order = new Order()
                     {
-                        CarId = (int?)car.CarId,
+                        CarID = car.CarID,
                         CustId = customer.CustId
                     };
                     //adaugam entitatea nou creata in context
@@ -253,7 +282,7 @@ namespace Ardelean_Adelin_Lab5
                     curr_id);
                     if (editedOrder != null)
                     {
-                        editedOrder.CarId =
+                        editedOrder.CarID =
                        Convert.ToInt32(cbCars.SelectedValue.ToString());
                         editedOrder.CustId =
                        Int32.Parse(cbCustomers.SelectedValue.ToString());
@@ -290,51 +319,31 @@ namespace Ardelean_Adelin_Lab5
                 }
             }
         }
+
         private void BindDataGrid()
         {
             var queryOrder = from ord in ctx.Orders
                              join cust in ctx.Customers on ord.CustId equals cust.CustId
-                             join car in ctx.Cars on ord.CarId equals car.CarId
+                             join car in ctx.Cars on ord.CarID equals car.CarID
                              select new
                              {
                                  ord.OrderId,
-                                 ord.CarId,
+                                 ord.CarID,
                                  ord.CustId,
                                  cust.FirstName,
                                  cust.LastName,
                                  car.Make,
                                  car.Model
                              };
+
             carOrdersViewSource.Source = queryOrder.ToList();
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            carViewSource = ((System.Windows.Data.CollectionViewSource)(this.FindResource("carViewSource")));
-            carViewSource.Source = ctx.Cars.Local;
-            ctx.Cars.Load();
-            BindDataGrid();
 
-            customerViewSource = ((System.Windows.Data.CollectionViewSource)(this.FindResource("customerViewSource")));
-            customerViewSource.Source = ctx.Customers.Local;
-            ctx.Customers.Load();
-            BindDataGrid();
 
-            cbCustomers.ItemsSource = ctx.Customers.Local;
-            cbCustomers.DisplayMemberPath = "FirstName";
-            cbCustomers.SelectedValuePath = "CustId";
 
-            carOrdersViewSource = ((System.Windows.Data.CollectionViewSource)(this.FindResource("carOrdersViewSource")));
-            carOrdersViewSource.Source = ctx.Orders.Local;
-            ctx.Orders.Load();
-
-            cbCars.ItemsSource = ctx.Cars.Local;
-            cbCars.DisplayMemberPath = "Make";
-            cbCars.SelectedValuePath = "CarId";
-            cbCustomers.ItemsSource = ctx.Customers.Local;
-            cbCustomers.DisplayMemberPath = "FirstName";
-            cbCustomers.SelectedValuePath = "CustId";
-        }
 
     }
 }
+
+
